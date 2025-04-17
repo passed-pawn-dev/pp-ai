@@ -1,0 +1,61 @@
+import os
+from langchain import hub
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough, RunnableLambda
+from langchain_chroma import Chroma
+from langchain_core.documents import Document
+
+if not os.environ.get("MISTRAL_API_KEY"):
+  os.environ["MISTRAL_API_KEY"] = ""
+
+from langchain_mistralai import ChatMistralAI
+
+llm = ChatMistralAI(model="mistral-large-latest")
+
+from langchain_core.documents import Document
+from langchain_mistralai import MistralAIEmbeddings, ChatMistralAI
+from langchain_chroma import Chroma
+from langchain_core.runnables import RunnablePassthrough
+from langchain_core.output_parsers import StrOutputParser
+import random
+
+docs = [
+    Document(page_content="User can register as a coach by pressing a green button on bottom left")
+]
+
+for i in range(20):
+    nonsense = f"This is irrelevant content #{i}: {random.choice(['Cats dance on Mars.', 'Bananas talk philosophy.', 'Llamas run programming bootcamps.', 'Umbrellas are political.', 'Blue cheese unlocks portals.'])}"
+    docs.append(Document(page_content=nonsense))
+
+embeddings = MistralAIEmbeddings()
+vectorstore = Chroma.from_documents(documents=docs, embedding=embeddings)
+
+retriever = vectorstore.as_retriever()
+
+def format_docs(docs):
+    return "\n\n".join(doc.page_content for doc in docs)
+
+def build_prompt(inputs):
+    return f"""You are a helpful asssistant. Answer in a very friendly way. You are a mascot elephant.
+    If it is not given in the context, say banana.
+    Answer the question based only on the context below:
+
+Context:
+{inputs['context']}
+
+Question: {inputs['question']}
+"""
+
+llm = ChatMistralAI(model="mistral-large-latest")
+
+rag_chain = (
+    {
+        "context": retriever | format_docs,
+        "question": RunnablePassthrough()
+    }
+    | RunnableLambda(build_prompt)
+    | llm
+    | StrOutputParser()
+)
+
+print(rag_chain.invoke("How can user register as coach?"))
