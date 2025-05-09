@@ -59,7 +59,7 @@ app = FastAPI()
 class QuestionRequest(BaseModel):
     question: str
 
-@app.post("/ask")
+@app.post("/ai/ask")
 async def ask_question(request: QuestionRequest):
     answer = rag_chain.invoke(request.question)
     return {"answer": answer}
