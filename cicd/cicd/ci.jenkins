@@ -1,0 +1,68 @@
+pipeline {
+    agent {
+        kubernetes {
+            inheritFrom 'kaniko'
+        }
+    }
+
+    environment {
+        IMAGE_NAME = "pp-ai-api"
+        IMAGE_REPO = "pp-ai"
+        IMAGE_REGISTRY = "ghcr.io/passed-pawn-dev"
+    }
+
+    stages {
+        stage('Prepare Version') {
+            steps {
+                script {
+                    def date = new Date().format("yyyy-MM-dd'T'HH-mm-ss", TimeZone.getTimeZone('GMT+2'))
+                    
+                    // Get short commit hash (first 7 characters)
+                    def commitHash = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+                    
+                    env.IMAGE_TAG = "${date}C${commitHash}"
+                }
+            }
+        }
+        stage('Delete current package'){
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'pp-cicd-github-service-account-personal-access-token',
+                        usernameVariable: 'REGISTRY_USER',
+                        passwordVariable: 'REGISTRY_TOKEN'
+                    )
+                ]) {
+                    script {
+                        def response = sh(script: '''
+                            curl -L \
+                              -X DELETE \
+                              -H "Accept: application/vnd.github+json" \
+                              -H "Authorization: Bearer $REGISTRY_TOKEN" \
+                              -H "X-GitHub-Api-Version: 2022-11-28" \
+                              https://api.github.com/orgs/passed-pawn-dev/packages/container/$IMAGE_REPO%2F$IMAGE_NAME
+                        ''', returnStdout: true)
+                        
+                        echo "Delete package response: ${response}"
+                    }
+                }
+            }
+        }
+        stage('Build and Push with Kaniko') {
+            steps {
+                container('kaniko') {
+                    sh '/kaniko/executor --cleanup --dockerfile=Dockerfile --context=git://github.com/passed-pawn-dev/$IMAGE_REPO.git#refs/heads/main --destination=$IMAGE_REGISTRY/$IMAGE_REPO/$IMAGE_NAME:$IMAGE_TAG --destination=$IMAGE_REGISTRY/$IMAGE_REPO/$IMAGE_NAME:latest'
+                }
+            }
+        }
+    }
+    post {
+        success {
+            script {
+                build job: "build-push-app-chart-pipeline", 
+                    wait: false, 
+                    parameters: [string(name: 'AI_IMAGE', value: "${IMAGE_REGISTRY}/${IMAGE_REPO}/${IMAGE_NAME}"), string(name: 'AI_IMAGE_TAG', value: "${IMAGE_TAG}")]
+            }
+        }
+    }
+}
