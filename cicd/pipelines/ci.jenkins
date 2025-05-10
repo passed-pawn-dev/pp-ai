@@ -51,7 +51,7 @@ pipeline {
         stage('Build and Push with Kaniko') {
             steps {
                 container('kaniko') {
-                    sh '/kaniko/executor --cleanup --dockerfile=Dockerfile --context=git://github.com/passed-pawn-dev/$IMAGE_REPO.git#refs/heads/main --destination=$IMAGE_REGISTRY/$IMAGE_REPO/$IMAGE_NAME:$IMAGE_TAG --destination=$IMAGE_REGISTRY/$IMAGE_REPO/$IMAGE_NAME:latest'
+                    sh '/kaniko/executor --cleanup --dockerfile=Dockerfile --context=git://github.com/passed-pawn-dev/$IMAGE_REPO.git#refs/heads/main --destination=$IMAGE_REGISTRY/$IMAGE_REPO/$IMAGE_NAME:$IMAGE_TAG --destination=$IMAGE_REGISTRY/$IMAGE_REPO/$IMAGE_NAME:latest --push-retry=3'
                 }
             }
         }
