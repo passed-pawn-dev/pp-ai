@@ -62,7 +62,7 @@ app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:4200"], allo
 class QuestionRequest(BaseModel):
     question: str
 
-@app.post("/ask")
+@app.post("/ai/ask")
 async def ask_question(request: QuestionRequest):
     answer = rag_chain.invoke(request.question)
     return {"answer": answer}
