@@ -1,0 +1,12 @@
+User can see its courses by clicking "My Courses" in the navbar on the top of the page
+User can create new course by clicking "New Course" button at the top of the courses list
+User can edit existing course by clicking on the pen icon on the bottom right of the course tile
+User can delete a course by clicking the red trash can icon on the bottom right of the course tile
+User can view course details by clicking on the course tile
+When viewing course details, user can add new lesson by clicking the blue "Add lesson" button on the right above lesson list
+When viewing course details, user can edit existing lesson by clicking the pen icon on the lesson tile
+When viewing course details, user can delete a lesson by clicking the red trash can icon on the lesson tile
+When viewing course details, user can see all lesson elements by clicking on the arrow icon on the right of the lesson tile
+When viewing course details, user can add an element like Quiz, Video, Puzzle or Example by clicking "Add" button on the lesson tile and selecting the element kind from the dropdown
+When viewing course details, user can edit an element by clicking on the element tile
+When viewing course details, user can delete an element by clicking the red trash can icon on the right of the element tile
