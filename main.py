@@ -13,15 +13,6 @@ from fastapi.middleware.cors import CORSMiddleware
 if not os.environ.get("MISTRAL_API_KEY"):
   os.environ["MISTRAL_API_KEY"] = ""
 
-# Sample documents
-# docs = [
-#     Document(page_content="User can register as a coach by pressing a green button on bottom left")
-# ]
-
-# for i in range(20):
-#     nonsense = f"This is irrelevant content #{i}: {random.choice(['Cats dance on Mars.', 'Bananas talk philosophy.', 'Llamas run programming bootcamps.', 'Umbrellas are political.', 'Blue cheese unlocks portals.'])}"
-#     docs.append(Document(page_content=nonsense))
-
 #Load documents
 def load_documents_from_txt(path):
     with open(path, "r", encoding="utf-8") as f:
@@ -82,7 +73,7 @@ app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:4200"], allo
 class QuestionRequest(BaseModel):
     question: str
 
-@app.post("/ask")
+@app.post("/ai/ask")
 async def ask_question(request: QuestionRequest, role: str):
     if role not in rag_chains:
         return {"error": "Invalid role. Use one of: student, coach, unregistered"}
