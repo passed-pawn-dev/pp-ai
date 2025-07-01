@@ -1,0 +1,5 @@
+User can register as a student by pressing the blue button "Register as student"
+User can register as a coach by pressing the white button "Register as coach"
+User can read more about how the app works by scrolling down
+User can read the FAQ by scrolling to the bottom
+User can log in by pressing the button in top right

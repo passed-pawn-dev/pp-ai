@@ -1,0 +1,11 @@
+User can see available courses by clicking "Available Courses" in the navbar on the top of the page
+User can search for courses by using the search section at the top of course list
+User can set what he wants to search by by selecting an option from the dropdown, on the right of the search bar
+User can filter available courses by difficulty by using special input on the right of the search section
+User can filter available courses by size by selecting sizes they want in the search section
+User can filter available courses by price by setting the price bounds in the search section
+User can sort courses by price, popularity and average review score using the dropdown in the search section and set the sort direction by clicking on the arrow
+User can choose to include owned courses in available courses by selecting the checkbox on the right of the search section
+User can buy a course from "Available Courses" section by clicking "Buy" on the course tile and entering the card information
+User can buy a course by clicking "Buy Course" on the bottom of course details page and entering the card information
+User can see details of the course he wants to buy, like release date, coach details, course content, hours of recorded videos, other student's reviews and lessons available in preview by clicking the course tile in "Available Courses" page
